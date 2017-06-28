@@ -1,11 +1,17 @@
 #!/bin/bash
-if [[ $# -ne 2 ]]; #condition for checking number of arguments
-then              
-	echo "usage:$0 <username> <ip address>"
+
+if [[ $# -le 1 ]];
+then              #checking whether input has 2 arguments 
+	echo "usage:$0 <username> <ip address> <'command'><location>"
 	exit 1
 fi 
-if ! [[ $2 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then  #checking for a valid ip address
+if ! [[ $2 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then  #validating ip address
 	echo "usage:$0 <username> <ip address>"
 	exit
 fi
-ssh $1@$2 ls -R|xargs -n 1 basename   #listing all files from a remote system
+if [ $# -gt 2 ]
+then
+	ssh $1@$2 $3 $4 #connecting to remote system and listing files
+else
+	ssh $1@$2 ls -R|xargs -n 1 basename 
+fi
